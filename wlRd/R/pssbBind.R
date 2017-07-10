@@ -12,14 +12,14 @@ pssbBind <- function(file.path, score.type = NULL, ambient = F) {
       list.with.each.file <- lapply(list.with.each.file, function(y) {
         y$id <- score.type[x]
         y})}
-
+    
     # bind all files from each file.path into data frames
-    do.call("rbind.data.frame", list.with.each.file)
+    do.call("rbind.data.frame", list.with.each.file) 
   })
   # bind files from all file.paths into one data frame
-  bibi <- do.call("rbind.data.frame", all.list)
-
+  bibi <- do.call("rbind.data.frame", all.list) 
+  
   if (ambient == TRUE) {bibi <- droplevels(bibi[bibi$Agency=="King County - DNRP" & bibi$Project == 'Boise Ambient' | bibi$Project == 'Ambient Monitoring' | bibi$Project =='Vashon' | bibi$Project =='Seattle',])}
-
+  
   return(bibi)
 }
