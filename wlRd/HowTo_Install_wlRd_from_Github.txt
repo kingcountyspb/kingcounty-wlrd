@@ -6,7 +6,7 @@ install_github("kingcountyspb/kingcounty-wlrd/wlRd")
 
 cd G:/GreenWQA/Biota/BenthosProjects_KC/BradyProjects
 git remote add origin https://github.com/kingcountyspb/kingcounty-wlrd
-git add wlRd/NAMESPACE # say for updating the NAMESPACE
+git add wlRd # add any new/updated files in wlRd
 git commit -m 'merge'
 git pull origin master --allow-unrelated-histories
 git push -u origin master
