@@ -2,14 +2,14 @@
 require('plyr')
 require('data.table')
 require('Rmisc')
-#source('C:/Users/bradyst/Documents/BradyProjects/rFuns/flow/wtr_yr.R')
+source('R/wtr_yr.R')
 
 calcFlashiness <- function(data, min.days = 360){
-  
+
 # remove records where D_MeanDis is NA
 flow <- data[complete.cases(data$D_MeanDis),]
 
-# convert date to 'water year' 
+# convert date to 'water year'
 flow <- data.frame(flow, water_year=wtr_yr(flow$D_Date, 10))
 
 # add standard year
@@ -47,7 +47,7 @@ fl$hpg <- cumsum(c(1, diff(fl$hpd) != 0))
 fl <- ddply(fl, "hpg", mutate, hpdur = length(hpc))
 
 # compute hpdur as the total hpd divided by the mean high pulse count
-fl<- ddply(fl, "SITE_WATER_YEAR", mutate, hpdur = sum(hpd) / mean(hpc))   
+fl<- ddply(fl, "SITE_WATER_YEAR", mutate, hpdur = sum(hpd) / mean(hpc))
 
 # compute annual mean high pulse duration, then export data frame to export as file
 hpdur <- aggregate(hpdur ~ SITE_WATER_YEAR + SITE_CODE + water_year + G_ID, FUN = "mean", data = fl)
@@ -59,7 +59,7 @@ hpdur <- aggregate(hpdur ~ SITE_WATER_YEAR + SITE_CODE + water_year + G_ID, FUN 
 # subset to high pulse days
 fl.hp <- fl[fl$hpd == 1,]
 
-# STEP 2: using date with high pulse events only (i.e. hpdur from above), compute time difference  
+# STEP 2: using date with high pulse events only (i.e. hpdur from above), compute time difference
 fl.hpdur<- ddply(fl.hp, "SITE_WATER_YEAR", mutate, hpr = round(difftime(max(D_Date), min(D_Date))), 0)
 
 # STEP 3 summarize high pulse range to site and year and export as file. Using 'mean' to aggregate, howerver all values should be identical at the water_year X SITE_CODE level. Can verify by replacing mena with var, which should be equal to 0.
@@ -77,9 +77,9 @@ fl$tqm <- ifelse(fl$D_MeanDis > fl$afr, 1, 0)
 fl.tqm <- aggregate(tqm ~ SITE_WATER_YEAR + SITE_CODE + water_year, data = fl, function(x){(sum(x)/length(x))})
 
 # V. Merge together flashiness metrics
-flash<-merge(x = hpc, y = hpdur[, c('SITE_WATER_YEAR', 'hpdur')], all = T, by = 'SITE_WATER_YEAR') 
-flash<-merge(x = flash, y = hpr[, c('SITE_WATER_YEAR', 'hpr')], all = T, by = 'SITE_WATER_YEAR') 
-flash<-merge(x = flash, y = fl.tqm[, c('SITE_WATER_YEAR', 'tqm')], all = T, by = 'SITE_WATER_YEAR') 
+flash<-merge(x = hpc, y = hpdur[, c('SITE_WATER_YEAR', 'hpdur')], all = T, by = 'SITE_WATER_YEAR')
+flash<-merge(x = flash, y = hpr[, c('SITE_WATER_YEAR', 'hpr')], all = T, by = 'SITE_WATER_YEAR')
+flash<-merge(x = flash, y = fl.tqm[, c('SITE_WATER_YEAR', 'tqm')], all = T, by = 'SITE_WATER_YEAR')
 
 return(flash)
 } # function closing brace
