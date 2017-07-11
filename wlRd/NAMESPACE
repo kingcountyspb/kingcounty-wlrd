@@ -3,4 +3,4 @@
 export(pssbBind)
 export(calcGrade)
 export(calcFlashiness)
-export(calcFlashiness))
+export(calcFlashiness)
